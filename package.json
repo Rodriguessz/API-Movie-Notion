@@ -1,0 +1,23 @@
+{
+  "name": "movie-notion",
+  "version": "1.0.0",
+  "description": "Projeto criado para resolucao do desafio proposto no stage08 do módulo explorer da rockeatseat.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rodriguessz/Movie-Notion.git"
+  },
+  "author": "Enzo Rodrigues",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rodriguessz/Movie-Notion/issues"
+  },
+  "homepage": "https://github.com/Rodriguessz/Movie-Notion#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
