@@ -1,14 +1,17 @@
 const { Router } =  require('express')
 const routes = Router();
 
+const UserController = require("../../controllers/UserController")
+const controller = new UserController()
 
 //#region Users Resources Routes
 
-routes.get("/", () => console.log("Controller"))
+routes.get("/", () => controller.index)
+
+
 
 //#endregion
 
 
 module.exports = routes;
-
 
