@@ -1,5 +1,5 @@
 const knex = require("../../database/knex")
-const { hash } = require("bcrypt")
+const { hash, compare } = require("bcryptjs")
 const AppError = require("../../utils/AppError")
 
 class UserController {
@@ -29,6 +29,28 @@ class UserController {
         
         return response.status(200).json({message: "Account successfully created!", user_id});
     }    
+    //#endregion
+
+    //#region Update Method
+    async update(request, response){
+        
+        const { user_id } = request.params;
+
+        //Get the infos to update the user Account.
+        const { name , email , password, newPassword } = request.body;
+
+        // Gets the user according to the user_id sent on request params;
+        const [user] = await knex("users").where("id", user_id);
+    
+        if(password){
+            const currentPassword = user.password;
+            //Checks if the current password matches with the old password sent by the userç; 
+            const passwordVerification = await compare(password, currentPassword)
+        }
+
+        
+
+    }
     //#endregion
 }
 
