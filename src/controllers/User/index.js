@@ -34,21 +34,41 @@ class UserController {
     //#region Update Method
     async update(request, response){
         
+        //Gets the infos to udpate the user
+        const { name, email, password , newPassword } = request.body;
         const { user_id } = request.params;
 
-        //Get the infos to update the user Account.
-        const { name , email , password, newPassword } = request.body;
+        //Gets the user and checks if the email sent through the request is already been used by another user; 
+        const user = await knex("users").where("id", user_id).first();
+        if (!user) throw new AppError("User not found!", 400)
 
-        // Gets the user according to the user_id sent on request params;
-        const [user] = await knex("users").where("id", user_id);
-    
-        if(password){
-            const currentPassword = user.password;
-            //Checks if the current password matches with the old password sent by the userç; 
-            const passwordVerification = await compare(password, currentPassword)
+        //Uses the whereNot operator to ensure that the user retrieved through the email query is not the same user retrieved by the id sent through the request
+        if(email){
+            const userExists = await knex("users").where({email}).whereNot("id", user_id).first();
+            if(userExists) throw new AppError("The email address is already associated with another account!")
         }
 
+        //Checks the requirements to update the account password
+        if(!password && newPassword) throw AppError("To update password, the current password must be informed!")
         
+        if(password && newPassword){
+            //The "compare" method of the bcryptjs library checks whether the string passed as an argument is equal to the encrypted string
+            const passwordMatches = await compare(password, user.password)
+            if(!passwordMatches) throw new AppError("The current password is incorrect!")
+
+            user.password = await hash(newPassword, 8);
+        }
+
+        //Prepare the infos and updated the user
+        const updatedData = {
+            name: name || user.name,
+            email: email || user.email,
+            password: user.password
+        }
+
+        await knex("users").update(updatedData).where("id", user_id);
+
+        return response.status(200).json({message: "User sucssesfuly updated!", user_id: user_id})
 
     }
     //#endregion
