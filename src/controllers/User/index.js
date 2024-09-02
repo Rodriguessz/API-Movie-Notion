@@ -72,6 +72,21 @@ class UserController {
 
     }
     //#endregion
+    
+    //#region Delete Method
+    async delete(request, response){
+
+        const { user_id } = request.params;
+
+        const userExists = await knex("users").delete().where("id", user_id).returning("id");
+
+        if(!userExists) throw new AppError("User not found!", 400)
+
+        return response.status(200).json({message: "User sucssesfuly deleted!", user_id})
+        
+        
+    }
+    //#endregion
 }
 
 
