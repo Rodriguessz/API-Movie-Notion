@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const mainRouter = Router();
 const usersRouter = require("./users")
-const moviesRouter = require("./movies")
+const moviesRouter = require("./movie_notes")
 const tagsRouter = require("./tags")
 
 
