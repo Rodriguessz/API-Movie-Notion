@@ -98,6 +98,15 @@ class MovieController {
     }
     //#endregion
 
+
+    //#region Update Method
+
+    async update(request, response){
+        
+    }
+
+    //#endregion
+
     //#region Show Method
     async show(request, response){
         const { user_id, note_id } = request.params;
