@@ -6,9 +6,11 @@ const movieController = new MovieController();
 
 
  //#region Movies Notion Resources Routes
-routes.get("/index/:user_id", movieController.index )
-routes.post("/create/:user_id", movieController.create )
-routes.delete("/delete/:note_id", movieController.delete )
+routes.get("/index/:user_id", movieController.index)
+routes.get("/show/:user_id/:note_id", movieController.show)
+routes.post("/create/:user_id", movieController.create)
+routes.delete("/delete/:note_id", movieController.delete)
+
 //#endregion
 
 

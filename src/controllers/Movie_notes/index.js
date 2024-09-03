@@ -2,6 +2,7 @@ const AppError = require("../../utils/AppError")
 const knex = require("../../database/knex")
 
 class MovieController {
+    
     //#region Index Method
 
     async index(request, response){
@@ -94,6 +95,32 @@ class MovieController {
 
         return response.status(200).json({message: "Note successfuly deleted!", note_id})
         
+    }
+    //#endregion
+
+    //#region Show Method
+    async show(request, response){
+        const { user_id, note_id } = request.params;
+
+        //Checks if the user exists, whatever throws the error to the user!
+        const user = await knex("users").where("id", user_id).first();
+        if(!user) throw new AppError("User not found!", 400)
+        
+        //Gets the note according to the note_id sent on request and cheks if exists!
+        const movieNote = await knex("movie_notes").select(["id", "title", "description", "rating", "created_at", "updated_at"]).where("id", note_id);
+        if(!movieNote) throw new AppError("Movie note not found!")
+
+        //Gets all tags related to the movie
+        const movieNoteTags = (await knex("tags").where("movie_note_id", note_id)).map(tag => tag.name);
+        
+        const processedNotes = movieNote.map(note => {
+            return {
+                ...note,
+                tags: movieNoteTags
+            }
+        })
+
+        return response.status(200).json(processedNotes)
     }
     //#endregion
 }
