@@ -102,7 +102,39 @@ class MovieController {
     //#region Update Method
 
     async update(request, response){
+
+
+        const { title , description , rating } = request.body;
+        const { note_id } = request.params;
+
+        const movieNote = await knex("movie_notes").where("id", note_id).first();
+        if(!movieNote) throw new AppError("Movie note not found!", 400);
+
+        //Formats the date to ISO8601,  but with some differences (YYYY/MM/DD HH:mm:ss).
+        const updated_at = new Date().toLocaleString('sv-SE', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
+
+        // Checks each property sent by the user and creates a new note object to update on the database;
+        const processedMovieNote = {
+            title: title || movieNote.title,
+            description: description || movieNote.description,
+            rating: rating || movieNote.rating,
+            updated_at
+        }
+
+        if(processedMovieNote.rating < 0 || processedMovieNote.rating > 5) throw new AppError("The rate must be between 0 and 5, where 0 means very bad and 5 very good!")
         
+    
+        await knex("movie_notes").update(processedMovieNote).where("id", note_id);
+
+        return response.status(200).json({message: "Movie note update successfuly!", note_id})
     }
 
     //#endregion
