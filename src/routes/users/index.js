@@ -5,9 +5,10 @@ const UserController = require("../../controllers/User")
 const usercontroller = new UserController();
 
 //#region Users Resources Routes
-routes.post("/create", usercontroller.create)
-routes.put("/update/:user_id", usercontroller.update)
-routes.delete("/delete/:user_id", usercontroller.delete)
+routes.get("/index", usercontroller.index);
+routes.post("/create", usercontroller.create);
+routes.put("/update/:user_id", usercontroller.update);
+routes.delete("/delete/:user_id", usercontroller.delete);
 //#endregion
 
 

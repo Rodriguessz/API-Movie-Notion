@@ -98,7 +98,6 @@ class MovieController {
     }
     //#endregion
 
-
     //#region Update Method
 
     async update(request, response){
@@ -165,8 +164,5 @@ class MovieController {
     }
     //#endregion
 }
-
-
-
 
 module.exports = MovieController

@@ -3,7 +3,11 @@ const { hash, compare } = require("bcryptjs")
 const AppError = require("../../utils/AppError")
 
 class UserController {
-    
+    //#region Index Method
+    async index(request, response){
+        console.log("Estou aqui")
+    }
+    //#endregion
     //#region Create Method 
     async create(request, response){
         
