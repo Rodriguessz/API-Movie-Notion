@@ -136,7 +136,41 @@ class UserController {
     }
     //#endregion
 
-    
+    //#region Show Method
+    async show(request, response){
+
+        const { user_id } = request.params;
+        const {is_admin} = request.query;
+
+        if(!Boolean(is_admin)) throw new AppError("You don't have the correct permissions to access this functionality!", 400);
+
+        const user = await knex("users").select(["id", "name", "email", "created_at"]).where("id", user_id).first();
+        if(!user) throw new AppError("User not found", 400);
+
+        const userMovies = await knex("movie_notes").select(["id", "user_id", "title", "description"]).where({user_id});
+
+        const userTags = await knex("tags").where({user_id})
+        
+        const processedMovies = userMovies.map(note => {
+            const filteredTags = userTags.filter(tag => tag.movie_note_id == note.id).map(filteredTag => filteredTag.name);
+
+            return {
+                ...note,
+                tags: filteredTags
+
+            }
+        })
+
+        const processedUser = {
+            ...user,
+            movies: processedMovies
+        }
+
+
+        return response.status(200).json(processedUser);
+
+    }
+    //#endregion
 }
 
 
