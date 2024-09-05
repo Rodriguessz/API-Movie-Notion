@@ -5,9 +5,53 @@ const AppError = require("../../utils/AppError")
 class UserController {
     //#region Index Method
     async index(request, response){
-        console.log("Estou aqui")
+        
+        const { is_admin } = request.query;
+        
+        if(!Boolean(is_admin)) throw new AppError("You don't have the correct permissions to access this functionality!")
+        
+        //Gets all users on the application!
+        const users = await knex("users").select(["id", "name", "email", "created_at"]);
+
+        //Gets all notes and tags in application and combines with the correct user!
+        const movieNotes = await knex("movie_notes").select(["id", "user_id","title", "description", "rating", "created_at"]);
+        const tags = await knex("tags").select(["user_id", "movie_note_id" ,"name"])
+
+        //Combines the tags to the related movie note;
+        const processedMovies = movieNotes.map(note => {
+            const filteredTags = tags.filter(tag => tag.movie_note_id == note.id).map(filteredTag => filteredTag.name);
+            
+            return {
+                ...note,
+                tags: filteredTags,
+            }
+        })
+
+        //Combines the correct user with the related notes;
+        const processedUsers = users.map(user => {
+
+            const userNotes = processedMovies.filter(note => note.user_id == user.id).map(filteredNote => {
+                return {
+                    title: filteredNote.title,
+                    description: filteredNote.description,
+                    rating: filteredNote.rating,
+                    tags: filteredNote.tags,
+                    created_at: filteredNote.created_at
+
+                }
+            });
+            
+            return {
+                ...user,
+                movies: userNotes
+            }
+        })
+
+
+        return response.status(200).json(processedUsers)
     }
     //#endregion
+   
     //#region Create Method 
     async create(request, response){
         
@@ -91,6 +135,8 @@ class UserController {
         
     }
     //#endregion
+
+    
 }
 
 

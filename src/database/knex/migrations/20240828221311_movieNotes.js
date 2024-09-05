@@ -7,7 +7,7 @@ exports.up = (knex) => {
         table.integer("rating");
         //If the reference user is deleted, it automatically deletes the movie notion
         table.integer("user_id").references("id").inTable("users").onDelete("CASCADE")
-        table.timestamp("create_at").default(knex.fn.now())
+        table.timestamp("created_at").default(knex.fn.now())
         table.timestamp("updated_at").default(knex.fn.now())
     })
 }
