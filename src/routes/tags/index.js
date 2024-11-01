@@ -1,17 +1,17 @@
 const { Router } = require('express');
-const { route } = require('express/lib/router');
 const routes = Router();
 
 const TagsController = require("../../controllers/Tags")
 const tagsController = new TagsController();
 
+
+const userAuthentication = require("../../middleware/authentication/userAuthentication")
+routes.use(userAuthentication)
+
 //#region Tags Resource routes 
 
-routes.get("/index/:user_id", tagsController.index);
-routes.post("/create/:user_id/:note_id", tagsController.create);
-routes.put("/update/:tag_id", tagsController.update);
+routes.get("/", tagsController.index);
 routes.delete("/delete/:tag_id", tagsController.delete);
-routes.get("/show/:tag_id", tagsController.show);
 
 //#endregion
 

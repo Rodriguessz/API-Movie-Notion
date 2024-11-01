@@ -50,10 +50,9 @@ class MovieController {
     //#region Create Method
     async create(request, response) {
         //Gets the user_id to create a movie note related to this id;
-        const { user_id } = request.params 
-        const { title, description , rating } = request.body;
-        const { tags } = request.query;
-
+        const user_id = request.user.id;
+    
+        const { title, description , rating, tags } = request.body;
 
         //Before create a note, checks if the user exists!
         const user = await knex("users").where("id", user_id ).first()
@@ -66,9 +65,8 @@ class MovieController {
 
         //Tags - Checks whether the user wishes to relate the note to a tag, if so, processes the information and creates the tag or tags in question.
         if(tags){
-            const arrayTags = tags.split(",")
             //Returns an array of objects that represent the tags to be created
-            const processedTags = arrayTags.map(tag => {
+            const processedTags = tags.map(tag => {
                 return {
                     name: tag,
                     user_id: user_id,

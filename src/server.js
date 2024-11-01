@@ -1,4 +1,4 @@
-require("dotenv").config();
+
 require("express-async-errors")
 
 const express = require("express");
@@ -20,7 +20,7 @@ app.use(router)
 app.use((error, request, response, next) => {errorCatcher(error,request, response, next)});
 
 
-app.listen(process.env.SERVER_PORT, () => console.log(`Server ON: http://locahost:${process.env.SERVER_PORT}`))
+app.listen(3333, () => console.log(`Server ON: http://locahost:3333`))
 
 //#endregion
 

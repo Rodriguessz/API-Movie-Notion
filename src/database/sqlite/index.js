@@ -9,10 +9,10 @@ const sqlite3 = require("sqlite3")
 
 //#region Sqlite Conncetion Configuration
 
-const sqliteConnection =  async () => {
+const sqliteConnection = async () => {
     const database = await sqlite.open({
         //Local to create the database file
-        filename:  path.resolve(__dirname, "../", "database.db"),
+        filename: path.resolve(__dirname, "../", "database.db"),
         //Database driver
         driver: sqlite3.Database
     })
