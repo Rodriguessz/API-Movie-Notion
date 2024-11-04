@@ -19,20 +19,20 @@ class UserAvatarController {
 
             if (user.avatar) {
                 //Delete the current avatar file.
-                await diskStorage.delete(avatarFile)
+                await diskStorage.delete(user.avatar)
             }
             
             //Move the uploaded file to the uploads folder
-            await diskStorage.save(avatarFile);           
+            const fileName = await diskStorage.save(avatarFile);           
             
             //Patch the user avatar on the database
-            user.avatar = avatarFile;
+            user.avatar = fileName;
 
             await knex("users").update(user).where({id : user_id});
 
             return response.status(200).json({message: "Avatar successfuly updated!", user});
 
-        } catch(e) {
+        } catch{
             throw new AppError("It was not possible complete the action")
         }
         

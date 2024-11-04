@@ -2,12 +2,12 @@
 require("express-async-errors")
 
 const express = require("express");
-const router = require('./routes')
-const dbConnection = require('./database/sqlite');
-const errorCatcher = require("./utils/ErrorCatcher")
-
 const cors = require('cors');
 
+const router = require('./routes')
+const uploadConfigs = require("./config/upload");
+const dbConnection = require('./database/sqlite');
+const errorCatcher = require("./utils/ErrorCatcher")
 
 const app = express();
 
@@ -20,7 +20,11 @@ app.use(cors());
 //Configures the application to accept and process JSON data in the body of incoming requests.
 app.use(express.json())
 
+
+app.use("/files", express.static(uploadConfigs.UPLOAD_FOLDER))
 app.use(router)
+
+
  
 //Middleware to error treatment on application. It catches the errors that ocurred anywhere on the app
 app.use((error, request, response, next) => {errorCatcher(error,request, response, next)});

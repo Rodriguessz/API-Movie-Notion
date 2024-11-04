@@ -24,7 +24,7 @@ class DiskStorage{
 
         try{   
             //Checks infos about the file. Any error, catch and throw to the user.
-            const fileInformations = fs.promises.stat(filePath);
+            const fileInformations = await fs.promises.stat(filePath);        
         }catch{
             throw new AppError("Failed to delete the file!")
         }
