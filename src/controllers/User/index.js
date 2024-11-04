@@ -2,56 +2,7 @@ const knex = require("../../database/knex")
 const { hash, compare } = require("bcryptjs")
 const AppError = require("../../utils/AppError")
 
-class UserController {
-    //#region Index Method
-    async index(request, response){
-        
-        const { is_admin } = request.query;
-        
-        if(!Boolean(is_admin)) throw new AppError("You don't have the correct permissions to access this functionality!")
-        
-        //Gets all users on the application!
-        const users = await knex("users").select(["id", "name", "email", "created_at"]);
-
-        //Gets all notes and tags in application and combines with the correct user!
-        const movieNotes = await knex("movie_notes").select(["id", "user_id","title", "description", "rating", "created_at"]);
-        const tags = await knex("tags").select(["user_id", "movie_note_id" ,"name"])
-
-        //Combines the tags to the related movie note;
-        const processedMovies = movieNotes.map(note => {
-            const filteredTags = tags.filter(tag => tag.movie_note_id == note.id).map(filteredTag => filteredTag.name);
-            
-            return {
-                ...note,
-                tags: filteredTags,
-            }
-        })
-
-        //Combines the correct user with the related notes;
-        const processedUsers = users.map(user => {
-
-            const userNotes = processedMovies.filter(note => note.user_id == user.id).map(filteredNote => {
-                return {
-                    title: filteredNote.title,
-                    description: filteredNote.description,
-                    rating: filteredNote.rating,
-                    tags: filteredNote.tags,
-                    created_at: filteredNote.created_at
-
-                }
-            });
-            
-            return {
-                ...user,
-                movies: userNotes
-            }
-        })
-
-
-        return response.status(200).json(processedUsers)
-    }
-    //#endregion
-   
+class UserController {  
     //#region Create Method 
     async create(request, response){
         
@@ -121,56 +72,7 @@ class UserController {
     }
     //#endregion
     
-    //#region Delete Method
-    async delete(request, response){
-
-        const { user_id } = request.params;
-
-        const userExists = await knex("users").delete().where("id", user_id).returning("id");
-
-        if(!userExists) throw new AppError("User not found!", 400)
-
-        return response.status(200).json({message: "User sucssesfuly deleted!", user_id})
-        
-        
-    }
-    //#endregion
-
-    //#region Show Method
-    async show(request, response){
-
-        const { user_id } = request.params;
-        const {is_admin} = request.query;
-
-        if(!Boolean(is_admin)) throw new AppError("You don't have the correct permissions to access this functionality!", 400);
-
-        const user = await knex("users").select(["id", "name", "email", "created_at"]).where("id", user_id).first();
-        if(!user) throw new AppError("User not found", 400);
-
-        const userMovies = await knex("movie_notes").select(["id", "user_id", "title", "description"]).where({user_id});
-
-        const userTags = await knex("tags").where({user_id})
-        
-        const processedMovies = userMovies.map(note => {
-            const filteredTags = userTags.filter(tag => tag.movie_note_id == note.id).map(filteredTag => filteredTag.name);
-
-            return {
-                ...note,
-                tags: filteredTags
-
-            }
-        })
-
-        const processedUser = {
-            ...user,
-            movies: processedMovies
-        }
-
-
-        return response.status(200).json(processedUser);
-
-    }
-    //#endregion
+    
 }
 
 

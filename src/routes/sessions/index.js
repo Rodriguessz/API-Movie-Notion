@@ -5,7 +5,7 @@ const SessionsController = require("../../controllers/Sessions/SessionsControlle
 const sessionsController = new SessionsController();
 
 
-routes.post("/", sessionsController.create);
+routes.post("/create", sessionsController.create);
 
 
 module.exports = routes;

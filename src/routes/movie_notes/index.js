@@ -8,7 +8,7 @@ const userAuthentication = require("../../middleware/authentication/userAuthenti
 routes.use(userAuthentication)
 
  //#region Movies Notion Resources Routes
-routes.get("/index/", movieController.index)
+routes.get("/", movieController.index)
 routes.get("/show/:note_id", movieController.show)
 routes.post("/create", movieController.create)
 routes.put("/update/:note_id", movieController.update)
