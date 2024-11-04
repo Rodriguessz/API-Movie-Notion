@@ -11,9 +11,26 @@ class DiskStorage{
                 path.resolve(uploadConfigs.TMP_FOLDER, file),
                 path.resolve(uploadConfigs.UPLOAD_FOLDER, file)
             )
+
+            return file;
         }catch{
             throw new AppError("Failed to save the file!")
         }
+    }
+
+    async delete(file){
+
+        const filePath = path.resolve(uploadConfigs.UPLOAD_FOLDER, file) 
+
+        try{   
+            //Checks infos about the file. Any error, catch and throw to the user.
+            const fileInformations = fs.promises.stat(filePath);
+        }catch{
+            throw new AppError("Failed to delete the file!")
+        }
+
+        //Delete the file
+        await fs.promises.unlink(filePath);
     }
 }
 

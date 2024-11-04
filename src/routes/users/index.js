@@ -1,30 +1,31 @@
+
+const { MULTER } = require('../../config/upload');
+
 const { Router } =  require('express')
 const routes = Router();
 
+//Upload configuration
+const multer = require('multer');
+const upload = multer(MULTER)
+
+//Controllers
 const UserController = require("../../controllers/User")
 const usercontroller = new UserController();
 
+const UserAvatarController = require("../../controllers/User/userAvatarController")
+const userAvatarController = new UserAvatarController();
+
+//Middlewares
 const userAuthentication  = require("../../middleware/authentication/userAuthentication")
 
 
-const DiskStorage = require('../../providers/DiskStorage')
-const diskStorage = new DiskStorage();
-
-const multer = require('multer');
-const { MULTER } = require('../../config/upload');
-const upload = multer(MULTER)
 //#region Users Resources Routes
 
 routes.post("/create", usercontroller.create);
 
 routes.put("/update/:user_id", userAuthentication, usercontroller.update);
 
-routes.patch("/avatar", upload.single('avatar') ,async (request, response) => {
-    const avatarFile = request.file.filename;
-    console.log(avatarFile)
-
-    await diskStorage.save(avatarFile);
-})
+routes.patch("/avatar", userAuthentication ,upload.single('avatar'), userAvatarController.update)
 
 
 //#endregion
