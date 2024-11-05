@@ -23,7 +23,7 @@ const userAuthentication  = require("../../middleware/authentication/userAuthent
 
 routes.post("/create", usercontroller.create);
 
-routes.put("/update/:user_id", userAuthentication, usercontroller.update);
+routes.put("/update", userAuthentication, usercontroller.update);
 
 routes.patch("/avatar", userAuthentication ,upload.single('avatar'), userAvatarController.update)
 

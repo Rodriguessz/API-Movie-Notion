@@ -35,8 +35,9 @@ class UserController {
         
         //Gets the infos to udpate the user
         const { name, email, password , newPassword } = request.body;
-        const { user_id } = request.params;
+        const user_id  = request.user.id;
 
+    
         //Gets the user and checks if the email sent through the request is already been used by another user; 
         const user = await knex("users").where("id", user_id).first();
         if (!user) throw new AppError("User not found!", 400)
@@ -57,17 +58,16 @@ class UserController {
 
             user.password = await hash(newPassword, 8);
         }
+        
+        user.name = name || user.name,
+        user.email= email || user.email,
+        user.password = user.password
 
-        //Prepare the infos and updated the user
-        const updatedData = {
-            name: name || user.name,
-            email: email || user.email,
-            password: user.password
-        }
 
-        await knex("users").update(updatedData).where("id", user_id);
+       await knex("users").update(user).where("id", user_id);
+      
 
-        return response.status(200).json({message: "User sucssesfuly updated!", user_id: user_id})
+        return response.status(200).json({message: "User sucssesfuly updated!", user})
 
     }
     //#endregion
