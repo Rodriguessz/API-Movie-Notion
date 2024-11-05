@@ -7,7 +7,7 @@ class MovieController {
 
     async index(request, response){
 
-        const { user_id } = request.params;
+        const  user_id  = request.user.id;
         const { tags , title } = request.query;
         
         let movieNotes;
@@ -64,7 +64,8 @@ class MovieController {
         const [noteId] = await knex("movie_notes").insert({title, description, rating, user_id});
 
         //Tags - Checks whether the user wishes to relate the note to a tag, if so, processes the information and creates the tag or tags in question.
-        if(tags){
+        if(tags.length > 0){
+          
             //Returns an array of objects that represent the tags to be created
             const processedTags = tags.map(tag => {
                 return {
@@ -73,7 +74,7 @@ class MovieController {
                     movie_note_id: noteId
                 }
             })
-
+            
             const createdTags = await knex("tags").insert(processedTags).returning(["id", "name"]);
 
             return response.status(200).json({message: "The note and tags was sucessfuly created!", note_id: noteId, user_id: user_id, tags: createdTags})
