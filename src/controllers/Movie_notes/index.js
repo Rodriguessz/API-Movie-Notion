@@ -9,7 +9,7 @@ class MovieController {
 
         const  user_id  = request.user.id;
         const { tags , title } = request.query;
-        
+
         let movieNotes;
         //Checks if the user is filtering the note by any tag
         if(tags){
@@ -24,9 +24,13 @@ class MovieController {
             .where("movie_notes.user_id", user_id)
    
         }else{
-            movieNotes = await knex("movie_notes").whereLike("title",`%${title}%`).where({user_id})
+
+            //Attention - When title is undefined, the database will not recognize as an empty string, bring an empty array as the query result.
+            //Verification to avoid this kind of issue;
+            movieNotes = await knex("movie_notes").whereLike("title",`%${title ?? ''}%`).where({user_id})
         }
 
+        console.log(movieNotes)
         //Gets all tags related to the user and combines them with their notes
         const userTags = await knex("tags").where({user_id})
 
