@@ -30,7 +30,7 @@ app.use(router)
 app.use((error, request, response, next) => {errorCatcher(error,request, response, next)});
 
 
-app.listen(3333, () => console.log(`Server ON: http://localhost:3333`))
+app.listen(3336, () => console.log(`Server ON: http://localhost:3333`))
 
 //#endregion
 
