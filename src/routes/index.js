@@ -8,6 +8,7 @@ const sessionRouter = require("./sessions")
 
 //#region Resources Routes
 
+mainRouter.get("/", (request, reponse) => reponse.json({message: "Server On!"}))
 mainRouter.use("/users", usersRouter);
 mainRouter.use("/movies", moviesRouter);
 mainRouter.use("/tags", tagsRouter);
