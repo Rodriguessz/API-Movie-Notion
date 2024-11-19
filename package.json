@@ -4,7 +4,7 @@
   "description": "Projeto criado para resolucao do desafio proposto no stage08 do módulo explorer da rockeatseat.",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
     "dev": "nodemon src/server.js",
     "migrate": "knex migrate:latest"
   },

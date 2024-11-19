@@ -1,5 +1,6 @@
 
 require("express-async-errors")
+require('dotenv/config')
 
 const express = require("express");
 const cors = require('cors');
@@ -29,8 +30,7 @@ app.use(router)
 //Middleware to error treatment on application. It catches the errors that ocurred anywhere on the app
 app.use((error, request, response, next) => {errorCatcher(error,request, response, next)});
 
-
-app.listen(3336, () => console.log(`Server ON: http://localhost:3333`))
+app.listen(process.env.SERVER_PORT || 3333, () => console.log(`Server ON: http://localhost:${process.env.SERVER_PORT}`))
 
 //#endregion
 
