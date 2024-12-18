@@ -8,7 +8,6 @@ const { compare } = require("bcryptjs")
 
 class SessionsController {
     async create(request, response){
-
         //Gets the email and password send by the user through the request;
         const { email, password } = request.body;
         

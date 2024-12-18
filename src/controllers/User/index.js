@@ -1,78 +1,36 @@
-const knex = require("../../database/knex")
-const { hash, compare } = require("bcryptjs")
-const AppError = require("../../utils/AppError")
+//Repositories
+const UserRepository = require('../../repositories/user/UserRepository');
+const userRepository = new UserRepository();
 
-class UserController {  
-    //#region Create Method 
-    async create(request, response){
-        
-        const {name, email , password} = request.body;
+//Services
+const UserCreateService = require("../../services/user/UserCreateService");
+const UserUpdateService = require("../../services/user/UserUpdateService")
 
-        if(!email || !name || !password){
-            throw new AppError("To create an account you must fill all required fields!", 400)
-        }
+class UserController {
+    async create(request, response) {
 
-        // Try to get a user in the database with the same email sendo by the user;
-        const [emailInUse] = await knex("users").where({email});
+        const userCreateService = new UserCreateService(userRepository);
+        const { name, email, password } = request.body;
 
-        //Checks if the email has already been used by another user;
-        if(emailInUse){
-            throw new AppError("The email is already being used!", 400)
-        }
+        //Create User - Service
+        const user_id = await userCreateService.execute({ name, email, password });
 
-        //Encrypt the user's password using the bcrypt library
-        const ecryptedPassword = await hash(password, 8);
+        return response.status(200).json({ message: "Account successfully created!", user_id });
+    }
 
+    async update(request, response) {
 
-        const [user_id] = await knex("users").insert({name, email, password: ecryptedPassword});
-        
-        return response.status(200).json({message: "Account successfully created!", user_id});
-    }    
-    //#endregion
+        const userUpdateService = new UserUpdateService(userRepository);
 
-    //#region Update Method
-    async update(request, response){
-        
-        //Gets the infos to udpate the user
-        const { name, email, password , newPassword } = request.body;
-        const user_id  = request.user.id;
+        const { name, email, password, newPassword } = request.body;
+        const user_id = request.user.id;
 
-    
-        //Gets the user and checks if the email sent through the request is already been used by another user; 
-        const user = await knex("users").where("id", user_id).first();
-        if (!user) throw new AppError("User not found!", 400)
+        //Update User - Service
+        const user = await userUpdateService.execute({ user_id, name, email, password, newPassword });
 
-        //Uses the whereNot operator to ensure that the user retrieved through the email query is not the same user retrieved by the id sent through the request
-        if(email){
-            const userExists = await knex("users").where({email}).whereNot("id", user_id).first();
-            if(userExists) throw new AppError("The email address is already associated with another account!")
-        }
-
-        //Checks the requirements to update the account password
-        if(!password && newPassword) throw AppError("To update password, the current password must be informed!")
-        
-        if(password && newPassword){
-            //The "compare" method of the bcryptjs library checks whether the string passed as an argument is equal to the encrypted string
-            const passwordMatches = await compare(password, user.password)
-            if(!passwordMatches) throw new AppError("The current password is incorrect!")
-
-            user.password = await hash(newPassword, 8);
-        }
-        
-        user.name = name || user.name,
-        user.email= email || user.email,
-        user.password = user.password
-
-
-       await knex("users").update(user).where("id", user_id);
-      
-
-        return response.status(200).json({message: "User sucssesfuly updated!", user})
+        return response.status(200).json({ message: "User sucssesfuly updated!", user })
 
     }
-    //#endregion
-    
-    
 }
 
 
