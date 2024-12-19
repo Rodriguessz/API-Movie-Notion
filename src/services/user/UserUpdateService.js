@@ -1,18 +1,21 @@
+const AppError = require("../../utils/AppError");
+const { compare, hash } = require('bcryptjs');
+
 class UserUpdateService {
 
-    constructor(userRepository){
+    constructor(userRepository) {
         this.userRepository = userRepository;
     }
 
-    async execute({user_id, name, email, password, newPassword}) {
+    async execute({ user_id, name, email, password, newPassword }) {
         //Gets the user and checks if the email sent through the request is already been used by another user; 
         const user = await this.userRepository.findById(user_id);
-        
+       
         if (!user) throw new AppError("User not found!", 400)
 
         //Uses the whereNot operator to ensure that the user retrieved through the email query is not the same user retrieved by the id sent through the request
         if (email) {
-            const userExists = await this.userRepository.findByEmail({user_id, email, exists: true});
+            const userExists = await this.userRepository.findByEmail({ user_id, email, exists: true });
             if (userExists) throw new AppError("The email address is already associated with another account!")
         }
 
@@ -28,11 +31,13 @@ class UserUpdateService {
         }
 
         user.name = name || user.name,
-            user.email = email || user.email,
-            user.password = user.password
+        user.email = email || user.email,
+        user.password = user.password
 
 
         await this.userRepository.update(user);
+
+        return true;
 
     }
 }

@@ -15,7 +15,7 @@ class UserCreateService {
         }
 
         // Try to get a user in the database with the same email sendo by the user;
-        const emailInUse = await this.userRepository.findByEmail({email});
+        const emailInUse = await this.userRepository.findByEmail({email});        
 
         //Checks if the email has already been used by another user;
         if (emailInUse) {
