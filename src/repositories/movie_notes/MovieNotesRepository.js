@@ -21,6 +21,12 @@ class MovieNotesRepository{
         return note;
     }
 
+    async findByUserId(user_id){
+        const notes = await knex("movie_notes").select(["id", "title"]).where({ user_id });
+
+        return notes;
+    }
+
     async create({title, description, rating, user_id }){
         const [note_id] = await knex("movie_notes").insert({ title, description, rating, user_id });
 
