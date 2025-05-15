@@ -2,7 +2,7 @@
 
 ![Badge de status do projeto](https://img.shields.io/badge/status-completo-brightgreen)
 
-MovieNotion API é uma aplicação back-end para controle e avaliação de filmes, utilizando Node.js e SQLite.
+MovieNotion API é uma aplicação back-end para controle e avaliação de filmes.
 
 ## Índice
 
